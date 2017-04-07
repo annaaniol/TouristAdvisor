@@ -16,14 +16,24 @@ class Downloader:
         geolocator = Nominatim()
         self.city_location = geolocator.geocode(self.city_name)
 
-    def get_photo_ids(self, latitude, longitude):
+    def get_photo_ids_single_page(self, page_number):
         URL = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}" \
-              "&accuracy=11&has_geo&lat={1}&lon={2}&format=json&nojsoncallback=1".\
-            format(self.api_key, self.city_location.latitude, self.city_location.longitude)
+              "&accuracy=11&has_geo&lat={1}&lon={2}&format=json&nojsoncallback=1&per_page=500&page={3}". \
+            format(self.api_key, self.city_location.latitude, self.city_location.longitude, page_number)
         Response = requests.get(URL).json()
 
         for photos in Response['photos']['photo']:
             self.photo_ids.append(photos['id'])
+
+    def get_photo_ids(self, latitude, longitude):
+        URL = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}" \
+              "&accuracy=11&has_geo&lat={1}&lon={2}&format=json&nojsoncallback=1&per_page=500". \
+            format(self.api_key, self.city_location.latitude, self.city_location.longitude)
+        Response = requests.get(URL).json()
+        pages_total = Response['photos']['pages']
+
+        for page_number in range (1, pages_total):
+            self.get_photo_ids_single_page(page_number)
 
     def get_locations(self):
         for ID in self.photo_ids:
