@@ -35,8 +35,8 @@ class Downloader:
             self.coordinates.append((lat, lon))
 
     def write_to_csv(self):
-        for line in self.coordinates:
-            print (line)
+        for cord_tuple in self.coordinates:
+            print (cord_tuple[0] + "," + cord_tuple[1])
 
     def get_points(self):
         self.get_city_coordinates()
