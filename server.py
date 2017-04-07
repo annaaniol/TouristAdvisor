@@ -20,11 +20,11 @@ def post_route():
 
 	#Call service
 
-	return jsonify([{'longitude': longitude+.010, 'latitude':latitude+.010, "time":0},
-	 {'longitude':longitude+.10, 'latitude':latitude+.10,  "time":50}, 
-	 {'longitude':longitude+.120, 'latitude':latitude+.1123,  "time":20},
-	  {'longitude':longitude+.110, 'latitude':latitude+.30,  "time":50},
-	  {'longitude':longitude+.610, 'latitude':latitude+.10,  "time":50}
+	return jsonify([{'longitude': longitude+.010, 'latitude':latitude+.010, "front_start":0},
+	 {'longitude':longitude+.10, 'latitude':latitude+.10,  "front_start":50}, 
+	 {'longitude':longitude+.120, 'latitude':latitude+.1123,  "front_start":20},
+	  {'longitude':longitude+.110, 'latitude':latitude+.30,  "front_start":50},
+	  {'longitude':longitude+.610, 'latitude':latitude+.10,  "front_start":50}
 
 	  ])
 
