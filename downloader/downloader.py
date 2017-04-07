@@ -1,5 +1,5 @@
 import requests
-import sys
+import numpy as np
 from geopy.geocoders import Nominatim
 
 
@@ -28,18 +28,22 @@ class Downloader:
     def get_locations(self):
         for ID in self.photo_ids:
             URL = "https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation" \
-                  "&api_key=ca830d075b22ef03d4556f9405fa17ad&photo_id={0}&format=json&nojsoncallback=1".format(ID)
+                  "&api_key={0}&photo_id={1}&format=json&nojsoncallback=1".format(self.api_key, ID)
             Response = requests.get(URL).json()
             lat = Response['photo']['location']['latitude']
             lon = Response['photo']['location']['longitude']
             self.coordinates.append((lat, lon))
 
+    def write_to_csv(self):
+        for line in self.coordinates:
+            print (line)
+
     def get_points(self):
         self.get_city_coordinates()
         self.get_photo_ids(self.city_location.latitude, self.city_location.longitude)
         self.get_locations()
-        return self.coordinates
+        self.write_to_csv()
+
 
 downloader = Downloader("Krakow")
 downloader.get_points()
-print (downloader.coordinates)
