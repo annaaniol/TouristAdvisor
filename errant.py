@@ -50,7 +50,7 @@ class Errant:
 					ph = (1-self.rho)*ph
 					self.pheromones[(a,b)]= ph
 					self.pheromones[(b,a)]= ph
-
+  
 			for trail in trails:
 				
 				trail_eval = self.trail_value(trail)
@@ -60,7 +60,7 @@ class Errant:
 					b = trail[i+1]
 
 					ph = self.pheromones[(a, b)]
-					ph = trail_eval * self.Q
+					ph = ph + trail_eval * self.Q
 					self.pheromones[(a,b)]= ph
 					self.pheromones[(b,a)]= ph
 					trail_len += self.metric(a, b)
