@@ -2,44 +2,44 @@ import requests
 import sys
 from geopy.geocoders import Nominatim
 
+
 class Downloader:
+    def __init__(self, city_name):
+        self.api_key = "ca830d075b22ef03d4556f9405fa17ad"
+        self.city_name = city_name
+        self.city_location = ""
+        self.points_location = []
+        self.photo_ids = []
+        self.coordinates = []
 
-    def generateCoordinatesList(city):
-        api_key="ca830d075b22ef03d4556f9405fa17ad"
+    def get_city_coordinates(self):
+        geolocator = Nominatim()
+        self.city_location = geolocator.geocode(self.city_name)
 
-        def getCoordinates(city):
-            geolocator = Nominatim()
-            location = geolocator.geocode(city)
-            print('Found city: '+location.address)
-            return (location.latitude, location.longitude)
+    def get_photo_ids(self, latitude, longitude):
+        URL = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}" \
+              "&accuracy=11&has_geo&lat={1}&lon={2}&format=json&nojsoncallback=1".\
+            format(self.api_key, self.city_location.latitude, self.city_location.longitude)
+        Response = requests.get(URL).json()
 
-        def getPhotoIDs(lat, lon):
-            URL = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={0}" \
-                  "&accuracy=11&has_geo&lat={1}&lon={2}&format=json&nojsoncallback=1".format(api_key, lat, lon)
+        for photos in Response['photos']['photo']:
+            self.photo_ids.append(photos['id'])
+
+    def get_locations(self):
+        for ID in self.photo_ids:
+            URL = "https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation" \
+                  "&api_key=ca830d075b22ef03d4556f9405fa17ad&photo_id={0}&format=json&nojsoncallback=1".format(ID)
             Response = requests.get(URL).json()
-            PhotoIDs = []
+            lat = Response['photo']['location']['latitude']
+            lon = Response['photo']['location']['longitude']
+            self.coordinates.append((lat, lon))
 
-            for photos in Response['photos']['photo']:
-                PhotoIDs.append(photos['id'])
-            return PhotoIDs
+    def get_points(self):
+        self.get_city_coordinates()
+        self.get_photo_ids(self.city_location.latitude, self.city_location.longitude)
+        self.get_locations()
+        return self.coordinates
 
-        def getLocations(IDs):
-            f = open(str("location_data_"+city),'w')
-            Locations = []
-            for ID in IDs:
-                URL = "https://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation" \
-                      "&api_key=ca830d075b22ef03d4556f9405fa17ad&photo_id={0}&format=json&nojsoncallback=1".format(ID)
-                Response = requests.get(URL).json()
-                lat = Response['photo']['location']['latitude']
-                lon = Response['photo']['location']['longitude']
-                f.write(lat+' '+lon+'\n')
-                Locations.append((lat,lon))
-            f.close()
-            return Locations
-
-        (latitude,longitude) = getCoordinates(city)
-        PhotoIDs = getPhotoIDs(latitude, longitude)
-        Locations = getLocations(PhotoIDs)
-        return Locations
-
-Downloader.generateCoordinatesList(city = sys.argv[1])
+downloader = Downloader("Krakow")
+downloader.get_points()
+print (downloader.coordinates)
