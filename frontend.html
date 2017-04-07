@@ -21,7 +21,7 @@
   </head>
   <body>
       <script>
-      var flightPath;
+      var path;
       var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -31,8 +31,8 @@
         }
 
         function sendRequest(data, server, port){
-          if (flightPath != null) {
-              flightPath.setMap(null);
+          if (path != null) {
+              path.setMap(null);
           }
            var response = $.ajax({
              url: "http://" + server + ":"+ port + "/tourist_route",
@@ -51,7 +51,7 @@
                    fpath.push(elem);
                  }
                 console.log(fpath[0]);
-               flightPath = new google.maps.Polyline({
+               path = new google.maps.Polyline({
                   path: fpath,
                   geodesic: true,
                   strokeColor: '#FF0000',
@@ -59,7 +59,7 @@
                   strokeWeight: 2
                 });
 
-                flightPath.setMap(map);
+                path.setMap(map);
 
               },
               error: function(XMLHttpRequest, textStatus, errorThrown) { 
