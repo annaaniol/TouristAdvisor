@@ -44,7 +44,7 @@
                    var elem = {};
                    elem["lng"] = parseFloat(r["longitude"]);
                    elem["lat"] = parseFloat(r["latitude"]);
-                    fpath.push(elem);
+                   fpath.push(elem);
                  }
                 console.log(fpath[0]);
                 var flightPath = new google.maps.Polyline({
@@ -84,7 +84,7 @@
 
        <form onsubmit="return buttonPressed()">
       
-      Time you want to spent in this city (h): <input value="1" id="utime" type="number" name="utime"><br>
+      Time you want to spend in this city (h): <input value="1" id="utime" type="number" name="utime"><br>
       Server ip: <input value="127.0.0.1" id="server" type="text" name="utime"><br>
       Server port: <input value="5000" id="port" type="text" name="utime"><br>
 
