@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  </head>
+  <body>
+      <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 8
+        });
+        }
+
+        function sendRequest(data, server, port){
+           var response = $.ajax({
+             url: "http://" + server + ":"+ port + "/tourist_route",
+             method: "post",
+             contentType: 'application/json; charset=utf-8',
+             dataType: 'json',
+             data: JSON.stringify(data),
+
+             success:function(response){
+              var fpath  = Array();
+                 for (var i = response.length - 1; i >= 0; i--) {
+                   var r= response[i];
+                   var elem = {};
+                   elem["lng"] = parseFloat(r["longitude"]);
+                   elem["lat"] = parseFloat(r["latitude"]);
+                    fpath.push(elem);
+                 }
+                console.log(fpath[0]);
+                var flightPath = new google.maps.Polyline({
+                  path: fpath,
+                  geodesic: true,
+                  strokeColor: '#FF0000',
+                  strokeOpacity: 1.0,
+                  strokeWeight: 2
+                });
+
+                flightPath.setMap(map);
+
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                  alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+              } 
+          });
+        }
+
+        function buttonPressed(){
+              var center = map.getCenter();
+              var time = document.getElementById("utime").value;
+              var request_data = {};
+              request_data['time'] = time * 60 * 60;
+              request_data['longitude'] = center.lng();
+              request_data['latitude'] = center.lat();
+              console.log(request_data);
+
+              var server_ip = document.getElementById("server").value;
+              var server_port = document.getElementById("port").value;
+
+              sendRequest(request_data, server_ip, server_port);
+
+              return false
+        }
+    </script>
+
+       <form onsubmit="return buttonPressed()">
+      
+      Time you want to spent in this city (h): <input value="1" id="utime" type="number" name="utime"><br>
+      Server ip: <input value="127.0.0.1" id="server" type="text" name="utime"><br>
+      Server port: <input value="5000" id="port" type="text" name="utime"><br>
+
+                <input type="Submit" value="Submit">
+    </form> 
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUeWrtdU21aKqEcNkslXUqdcZmc6CDgQs&callback=initMap"
+    async defer></script>
+  </body>
+</html>
