@@ -68,7 +68,7 @@ class Cluster:
         for first in range(len(self.distances)):
             for second in range(len(self.distances)):
                 self.distances[first, second] = vincenty(self.centers.get(first)[0],
-                                                 self.centers.get(second)[0]).meters
+                                                 self.centers.get(second)[0]).kilometers
 
     def prepare_center_coordinates_list(self):
         self.center_coordinates = (sorted(cluster.centers.values(), key=lambda x: x[1]))
@@ -83,12 +83,11 @@ class Cluster:
         self.remove_unclustered_points()
         self.calculate_distance_matrix()
         self.prepare_center_coordinates_list()
-        return self.distances
+        return self.distances.tolist()
 
     def get_center_coordinate_list(self):
         return self.center_coordinates
 
 cluster = Cluster()
 
-print(cluster.get_calculate_distance_matrix())
-print(cluster.center_coordinates)
+print(type(cluster.get_calculate_distance_matrix()))

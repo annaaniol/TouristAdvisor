@@ -1,10 +1,10 @@
-from antcolony import AntColony
-from antgraph import AntGraph
-
-import pickle
 import sys
 import traceback
+import numpy
 
+from antcolony import AntColony
+from antgraph import AntGraph
+from cluster import Cluster
 
 def ant_traverse(num_nodes, cost_mat):
 
@@ -48,10 +48,10 @@ def time_of_trip(path, pace):
 
 
 def get_trip():
-    cost_mat = stuff[1]
+    cost_mat = cost_mat_copy
     num_nodes = int(user_trip_time*3)
 
-    path_cost = ant_traverse(num_nodes, cost_mat) / 500
+    path_cost = ant_traverse(num_nodes, cost_mat)
     current_trip_time = time_of_trip(path_cost, slow_walk_pace)
 
     if current_trip_time != user_trip_time:
@@ -71,18 +71,18 @@ def get_trip():
                     return (prev_path_cost, prev_trip_time)
                 below_time_limit = False
 
-            if num_nodes >= 15:
+            if num_nodes >= len(cost_mat):
                 return (path_cost, current_trip_time)
 
             prev_path_cost = path_cost
-            path_cost = ant_traverse(num_nodes, cost_mat)/500
+            path_cost = ant_traverse(num_nodes, cost_mat)
 
             prev_trip_time = current_trip_time
             current_trip_time = time_of_trip(path_cost, slow_walk_pace)
 
 if __name__ == "__main__":
 
-    user_trip_time = 3
+    user_trip_time = 2
     vehicle_pace = 40
     vehicle_waiting_time = 0.1
     slow_walk_pace = 4
@@ -91,8 +91,10 @@ if __name__ == "__main__":
 
     num_iterations = 30
 
-    stuff = pickle.load(open("citiesAndDistances.pickled", "rb"), encoding='latin1')
-    cities = stuff[0]
-    cost_mat = stuff[1]
+    cluster = Cluster()
+    cost_mat = cluster.get_calculate_distance_matrix()
+    print(cost_mat)
+    cost_mat_copy = cost_mat.copy()
+    cities = cluster.get_center_coordinate_list()
     print("Path cost and trip time : ", get_trip())
 
