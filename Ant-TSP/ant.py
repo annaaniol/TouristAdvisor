@@ -1,6 +1,4 @@
 import math
-import random
-import sys
 from threading import *
 
 
@@ -19,6 +17,7 @@ class Ant(Thread):
 
         # same meaning as in standard equations
         self.Beta = 1
+        self.Alpha = 1
         #self.Q0 = 1  # Q0 = 1 works just fine for 10 city case (no explore)
         self.Q0 = 0.5
         self.Q = 0.9  # pheromone constant value
@@ -66,50 +65,51 @@ class Ant(Thread):
     def end(self):
         return not self.nodes_to_visit 
 
-    # described in report -- determines next node to visit after curr_node
+    def key_with_max_val(self, d):
+        v = list(d.values())
+        k = list(d.keys())
+        return k[v.index(max(v))]
+
+    # determines next node to visit after curr_node
     def state_transition_rule(self, curr_node):
         graph = self.colony.graph
-        q = random.random()
         max_node = -1
 
-        if q < self.Q0:
-            max_val = -1
-            val = None
+        max_val = -1
+        nominator = {}
 
-            for node in self.nodes_to_visit.values():
-                if graph.tau(curr_node, node) == 0:
-                    raise Exception("tau = 0")
+        for node in self.nodes_to_visit.values():
+            if graph.tau(curr_node, node) == 0:
+                raise Exception("tau = 0")
 
-                val = graph.tau(curr_node, node) * math.pow(graph.etha(curr_node, node), self.Beta)
-                if val > max_val:
-                    max_val = val
-                    max_node = node
-        else:
-            sum = 0
-            node = -1
+            nominator[node] = math.pow(graph.tau(curr_node, node), self.Alpha) *\
+                math.pow(graph.etha(curr_node, node), self.Beta)
+        sum = 0
+        node = -1
 
-            for node in self.nodes_to_visit.values():
-                if graph.tau(curr_node, node) == 0:
-                    raise Exception("tau = 0")
-                sum += graph.tau(curr_node, node) * math.pow(graph.etha(curr_node, node), self.Beta)
-            if sum == 0:
-                raise Exception("sum = 0")
+        for node in self.nodes_to_visit.values():
+            if graph.tau(curr_node, node) == 0:
+                raise Exception("tau = 0")
+            sum += math.pow(graph.tau(curr_node, node), self.Alpha) * math.pow(graph.etha(curr_node, node), self.Beta)
+        if sum == 0:
+            raise Exception("sum = 0")
 
-            avg = sum / len(self.nodes_to_visit)
+        p = {}
 
-            for node in self.nodes_to_visit.values():
-                p = graph.tau(curr_node, node) * math.pow(graph.etha(curr_node, node), self.Beta) 
-                if p > avg:
-                    max_node = node
+        for node in self.nodes_to_visit.values():
+            p[node] = nominator[node] / sum
+        max_node = self.key_with_max_val(p)
 
-            if max_node == -1:
-                max_node = node
-        
+        if max_node == -1:
+            max_node = node
+
         if max_node < 0:
             raise Exception("max_node < 0")
 
         del self.nodes_to_visit[max_node]
-        
+        del p[max_node]
+        del nominator[max_node]
+
         return max_node
 
     # pheromone update rule for indiv ants
