@@ -71,7 +71,7 @@ def get_trip():
                     return (prev_path_cost, prev_trip_time)
                 below_time_limit = False
 
-            if num_nodes >= len(cost_mat):
+            if num_nodes >= len(cost_mat) or num_nodes <= 2 :
                 return (path_cost, current_trip_time)
 
             prev_path_cost = path_cost
@@ -82,7 +82,7 @@ def get_trip():
 
 if __name__ == "__main__":
 
-    user_trip_time = 2
+    user_trip_time = 4
     vehicle_pace = 40
     vehicle_waiting_time = 0.1
     slow_walk_pace = 4
