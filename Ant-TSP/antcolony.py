@@ -82,10 +82,10 @@ class AntColony:
     # assign each ant a random start-node
     def distribute_ants(self):
         self.reset()
-        permitted_nodes = np.random.permutation(self.graph.num_nodes - 1)
+        permitted_nodes = np.random.permutation(self.graph.num_nodes).tolist()
         ants = []
         for i in range(0, self.num_ants):
-            ant = Ant(i, permitted_nodes.remove(), self)
+            ant = Ant(i, permitted_nodes.pop(), self)
             ants.append(ant)
         
         return ants
