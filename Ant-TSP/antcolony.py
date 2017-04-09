@@ -32,7 +32,7 @@ class AntColony:
 
             self.cv.acquire()
             # wait until update calls notify()
-            self.cv.wait()
+            self.cv.wait(0.1)
 
             lock = self.graph.lock
             lock.acquire()
