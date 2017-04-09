@@ -14,7 +14,6 @@ def ant_traverse(num_nodes, cost_mat):
             cost_mat[i] = cost_mat[i][0:num_nodes]
 
     try:
-        print(num_nodes, cost_mat)
         graph = AntGraph(num_nodes, cost_mat)
         best_path_vec = None
         best_path_cost = sys.maxsize
@@ -52,7 +51,7 @@ def get_trip():
     cost_mat = stuff[1]
     num_nodes = int(user_trip_time*3)
 
-    path_cost = ant_traverse(num_nodes, cost_mat) / 400
+    path_cost = ant_traverse(num_nodes, cost_mat) / 500
     current_trip_time = time_of_trip(path_cost, slow_walk_pace)
 
     if current_trip_time != user_trip_time:
@@ -76,16 +75,14 @@ def get_trip():
                 return (path_cost, current_trip_time)
 
             prev_path_cost = path_cost
-            path_cost = ant_traverse(num_nodes, cost_mat)/400
+            path_cost = ant_traverse(num_nodes, cost_mat)/500
 
             prev_trip_time = current_trip_time
             current_trip_time = time_of_trip(path_cost, slow_walk_pace)
-            print(current_trip_time)
-
 
 if __name__ == "__main__":
 
-    user_trip_time = 3.5
+    user_trip_time = 3
     vehicle_pace = 40
     vehicle_waiting_time = 0.1
     slow_walk_pace = 4

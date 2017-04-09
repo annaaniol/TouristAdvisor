@@ -21,6 +21,7 @@ class Ant(Thread):
         self.Beta = 1
         #self.Q0 = 1  # Q0 = 1 works just fine for 10 city case (no explore)
         self.Q0 = 0.5
+        self.Q = 0.9  # pheromone constant value
         self.Rho = 0.1
 
         # store the nodes remaining to be explored here
@@ -48,9 +49,7 @@ class Ant(Thread):
             self.path_vec.append(new_node)
             self.path_mat[self.curr_node][new_node] = 1  #adjacency matrix representing path
 
-            print(self.ID, self.path_vec, self.path_cost,)
-            
-            self.local_updating_rule(self.curr_node, new_node)
+            self.local_updating_rule(self.curr_node, new_node, self.path_cost)
             graph.lock.release()
 
             self.curr_node = new_node
@@ -113,9 +112,8 @@ class Ant(Thread):
         
         return max_node
 
-    # phermone update rule for indiv ants
-    def local_updating_rule(self, curr_node, next_node):
+    # pheromone update rule for indiv ants
+    def local_updating_rule(self, curr_node, next_node, path_cost):
         graph = self.colony.graph
-        val = self.Rho * graph.tau(curr_node, next_node) + (self.Rho * graph.tau0)
+        val = self.Rho * graph.tau(curr_node, next_node) + (self.Q / path_cost)
         graph.update_tau(curr_node, next_node, val)
-

@@ -32,7 +32,7 @@ class AntColony:
 
             self.cv.acquire()
             # wait until update calls notify()
-            self.cv.wait(0.1)
+            self.cv.wait(0.05)
 
             lock = self.graph.lock
             lock.acquire()
@@ -46,9 +46,7 @@ class AntColony:
         self.avg_path_cost = 0
         self.ant_counter = 0
         self.iter_counter += 1
-        # print ("iter_counter = %s" % (self.iter_counter,))
         for ant in self.ants:
-            # print ("starting ant = %s" % (ant.ID))
             ant.start()
 
     # called by individual ants
@@ -56,7 +54,6 @@ class AntColony:
         lock = Lock()
         lock.acquire()
 
-        # print ("Update called by %s" % (ant.ID,))
         self.ant_counter += 1
 
         self.avg_path_cost += ant.path_cost
