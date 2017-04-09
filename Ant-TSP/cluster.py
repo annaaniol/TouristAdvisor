@@ -39,10 +39,10 @@ class Cluster:
              markeredgecolor='k', markersize=14)
 
         xy = self.data[class_member_mask & ~core_samples_mask]
-        plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col,
-             markeredgecolor='k', markersize=6)
-        plt.title('Estimated number of clusters: %d' % n_clusters_)
-        plt.show()
+        # plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col,
+        #      markeredgecolor='k', markersize=6)
+        # plt.title('Estimated number of clusters: %d' % n_clusters_)
+        # plt.show()
 
     def group_data(self):
         self.points = zip(self.data, self.labels)

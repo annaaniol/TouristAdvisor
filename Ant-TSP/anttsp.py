@@ -32,7 +32,7 @@ def ant_traverse(num_nodes, cost_mat):
         print("------------------------------------------------------------")
         print("\nBest path = %s" % (best_path_vec,))
         for node in best_path_vec:
-            print(cities[node] + " ")
+            print(cities[node])
         print("\nBest path cost = %s\n" % (best_path_cost,))
 
     except Exception as e:
