@@ -21,7 +21,7 @@ class Ant(Thread):
         self.Beta = 1
         #self.Q0 = 1  # Q0 = 1 works just fine for 10 city case (no explore)
         self.Q0 = 0.5
-        self.Rho = 0.99
+        self.Rho = 0.1
 
         # store the nodes remaining to be explored here
         self.nodes_to_visit = {}
@@ -116,6 +116,6 @@ class Ant(Thread):
     # phermone update rule for indiv ants
     def local_updating_rule(self, curr_node, next_node):
         graph = self.colony.graph
-        val = (1 - self.Rho) * graph.tau(curr_node, next_node) + (self.Rho * graph.tau0)
+        val = self.Rho * graph.tau(curr_node, next_node) + (self.Rho * graph.tau0)
         graph.update_tau(curr_node, next_node, val)
 
