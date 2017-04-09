@@ -5,6 +5,7 @@ import numpy
 from antcolony import AntColony
 from antgraph import AntGraph
 from cluster import Cluster
+from geopy import *
 
 def ant_traverse(num_nodes, cost_mat):
 
@@ -33,6 +34,9 @@ def ant_traverse(num_nodes, cost_mat):
         print("\nBest path = %s" % (best_path_vec,))
         for node in best_path_vec:
             print(cities[node])
+            geolocator = Nominatim()
+            location = geolocator.reverse("{0}, {1}".format(cities[node][0], cities[node][1]))
+            print(location.address)
         print("\nBest path cost = %s\n" % (best_path_cost,))
 
     except Exception as e:

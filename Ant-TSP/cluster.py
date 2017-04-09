@@ -7,7 +7,7 @@ from collections import defaultdict
 class Cluster:
 
     def __init__(self):
-        self.data_source = "../data/data6000_Wroclaw.csv"
+        self.data_source = "../data/data6000_Krakow.csv"
         self.data = self.load_data()
         self.eps = 0.001
         self.min_samples = 5
@@ -48,7 +48,6 @@ class Cluster:
         self.points = zip(self.data, self.labels)
         for value, key in self.points:
             self.grouped[key].append(value)
-
 
     def calculate_centers(self):
         for label in self.grouped:
