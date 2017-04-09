@@ -50,15 +50,6 @@ class AntColony:
             # print ("starting ant = %s" % (ant.ID))
             ant.start()
 
-    def num_ants(self):
-        return len(self.ants)
-
-    def num_iterations(self):
-        return self.num_iterations
-
-    def iteration_counter(self):
-        return self.iter_counter
-
     # called by individual ants
     def update(self, ant):
         lock = Lock()
