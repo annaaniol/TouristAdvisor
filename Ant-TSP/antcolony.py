@@ -1,5 +1,6 @@
 from ant import Ant
 from threading import Lock, Condition
+import numpy as np
 
 import random
 import sys
@@ -50,15 +51,6 @@ class AntColony:
             # print ("starting ant = %s" % (ant.ID))
             ant.start()
 
-    def num_ants(self):
-        return len(self.ants)
-
-    def num_iterations(self):
-        return self.num_iterations
-
-    def iteration_counter(self):
-        return self.iter_counter
-
     # called by individual ants
     def update(self, ant):
         lock = Lock()
@@ -90,9 +82,10 @@ class AntColony:
     # assign each ant a random start-node
     def distribute_ants(self):
         self.reset()
+        permitted_nodes = np.random.permutation(self.graph.num_nodes).tolist()
         ants = []
         for i in range(0, self.num_ants):
-            ant = Ant(i, random.randint(0, self.graph.num_nodes - 1), self)
+            ant = Ant(i, permitted_nodes.pop(), self)
             ants.append(ant)
         
         return ants
