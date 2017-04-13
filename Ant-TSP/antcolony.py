@@ -32,7 +32,7 @@ class AntColony:
 
             self.cv.acquire()
             # wait until update calls notify()
-            self.cv.wait(0.05)
+            self.cv.wait(0.005)
 
             lock = self.graph.lock
             lock.acquire()
@@ -67,7 +67,6 @@ class AntColony:
 
         if self.ant_counter == len(self.ants):
             self.avg_path_cost /= len(self.ants)
-            print ("Best: %s, %s, %s, %s" % (self.best_path_vec, self.best_path_cost, self.iter_counter, self.avg_path_cost,))
             self.cv.acquire()
             self.cv.notify()
             self.cv.release()
