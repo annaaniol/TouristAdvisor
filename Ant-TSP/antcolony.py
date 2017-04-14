@@ -23,8 +23,8 @@ class AntColony:
         self.best_path_mat  = None
         self.last_best_path_iteration = 0
 
-    def start(self):
-        self.ants = self.distribute_ants()
+    def start(self, beta, alpha, Q0, Q, rho):
+        self.ants = self.distribute_ants(beta, alpha, Q0, Q, rho)
         self.iter_counter = 0
 
         while self.iter_counter < self.num_iterations:
@@ -76,12 +76,12 @@ class AntColony:
         return self.iter_counter == self.num_iterations
 
     # assign each ant a random start-node
-    def distribute_ants(self):
+    def distribute_ants(self, beta, alpha, Q0, Q, rho):
         self.reset()
         permitted_nodes = np.random.permutation(self.graph.num_nodes).tolist()
         ants = []
         for i in range(0, self.num_ants):
-            ant = Ant(i, permitted_nodes.pop(), self)
+            ant = Ant(i, permitted_nodes.pop(), self, beta, alpha, Q0, Q, rho)
             ants.append(ant)
         
         return ants

@@ -3,7 +3,7 @@ from threading import *
 
 
 class Ant(Thread):
-    def __init__(self, ID, start_node, colony):
+    def __init__(self, ID, start_node, colony, beta, alpha, Q0, Q, rho):
         Thread.__init__(self)
         self.ID = ID
         self.start_node = start_node
@@ -16,12 +16,12 @@ class Ant(Thread):
         self.path_cost = 0
 
         # same meaning as in standard equations
-        self.Beta = 1
-        self.Alpha = 1
+        self.Beta = beta
+        self.Alpha = alpha
         #self.Q0 = 1  # Q0 = 1 works just fine for 10 city case (no explore)
-        self.Q0 = 0.5
-        self.Q = 0.9  # pheromone constant value
-        self.Rho = 0.1
+        self.Q0 = Q0
+        self.Q = Q  # pheromone constant value
+        self.Rho = rho
 
         # store the nodes remaining to be explored here
         self.nodes_to_visit = {}
@@ -60,7 +60,7 @@ class Ant(Thread):
         self.colony.update(self)
 
         # allows thread to be restarted (calls Thread.__init__)
-        self.__init__(self.ID, self.start_node, self.colony)
+        self.__init__(self.ID, self.start_node, self.colony, self.Beta, self.Alpha, self.Q0, self.Q, self.Rho)
 
     def end(self):
         return not self.nodes_to_visit 

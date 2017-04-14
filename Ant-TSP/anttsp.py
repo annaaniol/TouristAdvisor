@@ -8,7 +8,7 @@ from cluster import Cluster
 from geopy import *
 
 
-def ant_traverse(num_nodes, cost_mat, num_iterations, cities):
+def ant_traverse(num_nodes, cost_mat, num_iterations, cities, beta, alpha, Q0, Q, rho):
 
     if num_nodes < len(cost_mat):
         cost_mat = cost_mat[0:num_nodes]
@@ -23,7 +23,7 @@ def ant_traverse(num_nodes, cost_mat, num_iterations, cities):
         graph.reset_tau()
         ant_colony = AntColony(graph, num_nodes, num_iterations)
 
-        ant_colony.start()
+        ant_colony.start(beta, alpha, Q0, Q, rho)
 
         if ant_colony.best_path_cost < best_path_cost:
             best_path_vec = ant_colony.best_path_vec
@@ -34,11 +34,11 @@ def ant_traverse(num_nodes, cost_mat, num_iterations, cities):
         print("------------------------------------------------------------")
         print("\nBest path = %s" % (best_path_vec,))
         coordinates = [cities[node] for node in best_path_vec]
-        for node in best_path_vec:
-            print(cities[node])
-            geolocator = Nominatim()
-            location = geolocator.reverse("{0}, {1}".format(cities[node][0], cities[node][1]))
-            print(location.address)
+        # for node in best_path_vec:
+        #     print(cities[node])
+        #     geolocator = Nominatim()
+        #     location = geolocator.reverse("{0}, {1}".format(cities[node][0], cities[node][1]))
+        #     print(location.address)
 
         edges_len = []
         for i in range(len(best_path_vec)-1):
@@ -50,6 +50,7 @@ def ant_traverse(num_nodes, cost_mat, num_iterations, cities):
         print("exception: " + str(e))
         best_path_cost = sys.maxsize
         edges_len = []
+        coordinates = []
         traceback.print_exc()
 
     return best_path_cost, coordinates, edges_len
@@ -68,7 +69,7 @@ def time_of_trip(walk_pace, public_transport_pace, transport_waiting_time, singl
 
 
 def get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time, single_attraction_time,
-             num_iterations):
+             num_iterations, beta, alpha, Q0, Q, rho):
 
     cluster = Cluster()
     cost_mat = cluster.get_calculate_distance_matrix().copy()
@@ -76,7 +77,8 @@ def get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting
 
     num_nodes = int(user_trip_time*3)
 
-    path_cost, coordinates, edges_len = ant_traverse(num_nodes, cost_mat, num_iterations, cities)
+    path_cost, coordinates, edges_len = ant_traverse(num_nodes, cost_mat, num_iterations, cities, beta, alpha, Q0, Q, rho)
+
     current_trip_time = time_of_trip(walk_pace, public_transport_pace, transport_waiting_time, single_attraction_time, edges_len)
 
     if current_trip_time != user_trip_time:
@@ -103,7 +105,8 @@ def get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting
                 return coordinates
 
             prev_path_cost, prev_coordinates = path_cost, coordinates
-            path_cost, coordinates, edges_len = ant_traverse(num_nodes, cost_mat, num_iterations, cities)
+            path_cost, coordinates, edges_len = ant_traverse(num_nodes, cost_mat, num_iterations, cities, beta, alpha,
+                                                             Q0, Q, rho)
 
             prev_trip_time = current_trip_time
             current_trip_time = time_of_trip(walk_pace, public_transport_pace, transport_waiting_time,
@@ -116,11 +119,16 @@ if __name__ == "__main__":
     MEDIUM_WALK_PACE = 4.5
     FAST_WALK_PACE = 6
     public_transport_pace = 40
-    user_trip_time = 4
+    user_trip_time = 8
     transport_waiting_time = 0.1
     single_attraction_time = 0.08
     walk_pace = SLOW_WALK_PACE
     num_iterations = 100
+    beta = 1
+    alpha = 1
+    Q0 = 0.5
+    Q = 0.9
+    rho = 0.1
 
     print("List of coordinates : ", get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time,
-                                             single_attraction_time, num_iterations))
+                                             single_attraction_time, num_iterations, beta, alpha, Q0, Q, rho))
