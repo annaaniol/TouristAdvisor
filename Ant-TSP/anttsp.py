@@ -7,7 +7,8 @@ from antgraph import AntGraph
 from cluster import Cluster
 from geopy import *
 
-def ant_traverse(num_nodes, cost_mat):
+
+def ant_traverse(num_nodes, cost_mat, num_iterations, cities):
 
     if num_nodes < len(cost_mat):
         cost_mat = cost_mat[0:num_nodes]
@@ -32,46 +33,51 @@ def ant_traverse(num_nodes, cost_mat):
         print("                     Results                                ")
         print("------------------------------------------------------------")
         print("\nBest path = %s" % (best_path_vec,))
+        coordinates = [cities[node] for node in best_path_vec]
         for node in best_path_vec:
             print(cities[node])
             geolocator = Nominatim()
             location = geolocator.reverse("{0}, {1}".format(cities[node][0], cities[node][1]))
             print(location.address)
 
-        edges_len.clear()
+        edges_len = []
         for i in range(len(best_path_vec)-1):
             edges_len.append(cost_mat[best_path_vec[i]][best_path_vec[i+1]])
         last_edge_len = cost_mat[best_path_vec[0]][best_path_vec[-1]]
         edges_len.append(last_edge_len)
 
-        print("\nBest path cost = %s\n" % (best_path_cost,))
-
     except Exception as e:
         print("exception: " + str(e))
         best_path_cost = sys.maxsize
+        edges_len = []
         traceback.print_exc()
 
-    return best_path_cost
+    return best_path_cost, coordinates, edges_len
 
 
-def time_of_trip(walk_pace):
+def time_of_trip(walk_pace, public_transport_pace, transport_waiting_time, single_attraction_time, edges_len):
 
-    paths_to_go_by_vehicle = sum([dist for dist in edges_len if dist > 3.0])
+    paths_by_public_transport = sum([dist for dist in edges_len if dist > 3.0])
     paths_to_walk = sum([dist for dist in edges_len if dist <= 3.0])
 
     walk_time = paths_to_walk/walk_pace
-    ride_time = paths_to_go_by_vehicle/vehicle_pace + vehicle_waiting_time*paths_to_go_by_vehicle
+    ride_time = paths_by_public_transport / public_transport_pace + transport_waiting_time * paths_by_public_transport
     attractions_time = len(edges_len) * single_attraction_time
 
     return walk_time + ride_time + attractions_time
 
 
-def get_trip(walk_pace):
-    cost_mat = cost_mat_copy
+def get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time, single_attraction_time,
+             num_iterations):
+
+    cluster = Cluster()
+    cost_mat = cluster.get_calculate_distance_matrix().copy()
+    cities = cluster.get_center_coordinate_list()
+
     num_nodes = int(user_trip_time*3)
 
-    path_cost = ant_traverse(num_nodes, cost_mat)
-    current_trip_time = time_of_trip(walk_pace)
+    path_cost, coordinates, edges_len = ant_traverse(num_nodes, cost_mat, num_iterations, cities)
+    current_trip_time = time_of_trip(walk_pace, public_transport_pace, transport_waiting_time, single_attraction_time, edges_len)
 
     if current_trip_time != user_trip_time:
 
@@ -82,39 +88,39 @@ def get_trip(walk_pace):
             if user_trip_time > current_trip_time:
                 num_nodes += 1
                 if not below_time_limit:
-                    return path_cost, current_trip_time, num_nodes
+                    print("Path cost, trip time and number of nodes ", path_cost, current_trip_time, num_nodes)
+                    return coordinates
                 below_time_limit = True
             else:
                 num_nodes -= 1
                 if below_time_limit:
-                    return prev_path_cost, prev_trip_time, num_nodes
+                    print("Path cost, trip time and number of nodes ", prev_path_cost, prev_trip_time, num_nodes)
+                    return prev_coordinates
                 below_time_limit = False
 
             if num_nodes >= len(cost_mat) or num_nodes < 2:
-                return path_cost, current_trip_time, num_nodes
+                print("Path cost, trip time and number of nodes ", path_cost, current_trip_time, num_nodes)
+                return coordinates
 
-            prev_path_cost = path_cost
-            path_cost = ant_traverse(num_nodes, cost_mat)
+            prev_path_cost, prev_coordinates = path_cost, coordinates
+            path_cost, coordinates, edges_len = ant_traverse(num_nodes, cost_mat, num_iterations, cities)
 
             prev_trip_time = current_trip_time
-            current_trip_time = time_of_trip(walk_pace)
+            current_trip_time = time_of_trip(walk_pace, public_transport_pace, transport_waiting_time,
+                                             single_attraction_time, edges_len)
 
 if __name__ == "__main__":
 
+    # user specifiable parameters :
+    SLOW_WALK_PACE = 3
+    MEDIUM_WALK_PACE = 4.5
+    FAST_WALK_PACE = 6
+    public_transport_pace = 40
     user_trip_time = 4
-    vehicle_pace = 40
-    vehicle_waiting_time = 0.1
-    slow_walk_pace = 3
-    medium_walk_pace = 4.5
-    fast_walk_pace = 6
+    transport_waiting_time = 0.1
     single_attraction_time = 0.08
-    walk_pace = slow_walk_pace
-
+    walk_pace = SLOW_WALK_PACE
     num_iterations = 100
-    edges_len = []
 
-    cluster = Cluster()
-    cost_mat = cluster.get_calculate_distance_matrix()
-    cost_mat_copy = cost_mat.copy()
-    cities = cluster.get_center_coordinate_list()
-    print("Path cost, trip time and number of nodes : ", get_trip(walk_pace))
+    print("List of coordinates : ", get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time,
+                                             single_attraction_time, num_iterations))
