@@ -25,8 +25,8 @@
       var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 8
+          center: {lat: 50.046275295332279, lng: 19.910772939196455},
+          zoom: 12
         });
         }
 
@@ -70,11 +70,25 @@
 
         function buttonPressed(){
               var center = map.getCenter();
-              var time = document.getElementById("utime").value;
+
               var request_data = {};
-              request_data['time'] = time * 60 * 60;
+
               request_data['longitude'] = center.lng();
               request_data['latitude'] = center.lat();
+
+              request_data['walk_pace'] = document.getElementById("walk_pace").value;
+              request_data['public_transport_pace'] = document.getElementById("public_transport_pace").value;
+              request_data['user_trip_time'] = document.getElementById("user_trip_time").value;
+              request_data['transport_waiting_time'] = document.getElementById("transport_waiting_time").value;
+              request_data['single_attraction_time'] = document.getElementById("single_attraction_time").value;
+              request_data['num_iterations'] = document.getElementById("num_iterations").value;
+              request_data['beta'] = document.getElementById("beta").value;
+              request_data['alpha'] = document.getElementById("alpha").value;
+              request_data['Q0'] = document.getElementById("Q0").value;
+              request_data['rho'] = document.getElementById("rho").value;
+              request_data['Q'] = document.getElementById("Q").value;
+
+
               console.log(request_data);
 
               var server_ip = document.getElementById("server").value;
@@ -86,13 +100,40 @@
         }
     </script>
 
+<!--  
+  walk_pace
+  public_transport_pace
+  user_trip_time
+  transport_waiting_time
+  single_attraction_time
+  num_iterations
+  beta
+  alpha
+  Q0
+  Q
+  rho
+ -->
        <form onsubmit="return buttonPressed()">
-      
-      Time you want to spend in this city (h): <input value="1" id="utime" type="number" name="utime"><br>
-      Server ip: <input value="127.0.0.1" id="server" type="text" name="utime"><br>
-      Server port: <input value="5000" id="port" type="text" name="utime"><br>
+    
 
-                <input type="Submit" value="Submit">
+
+      Server ip: <input value="127.0.0.1" id="server" type="text" name="utime">
+      Server port: <input value="5000" id="port" type="text" name="utime"><br> <br>
+
+      Walk pace: <input value="3" id="walk_pace" type="text" >
+      Public transport pace: <input value="40" id="public_transport_pace" type="text" >
+      User trip time: <input value="8" id="user_trip_time" type="text" >
+      Transport waiting time: <input value="0.1" id="transport_waiting_time" type="text" >
+      Single attraction time: <input value="0.08" id="single_attraction_time" type="text" >
+      Num iterations: <input value="100" id="num_iterations" type="text" >
+      beta: <input value="1" id="beta" type="text" >
+      alpha: <input value="1" id="alpha" type="text" >
+      Q0: <input value="0.5" id="Q0" type="text" >
+      Q: <input value="0.9" id="Q" type="text" >
+      rho: <input value="0.1" id="rho" type="text" >
+
+      <br><br>                
+      <input type="Submit" value="Submit">
     </form> 
     <div id="map"></div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUeWrtdU21aKqEcNkslXUqdcZmc6CDgQs&callback=initMap"
