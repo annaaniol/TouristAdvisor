@@ -33,12 +33,9 @@ def post_route():
 	trip_list = anttsp.get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time, 
 		single_attraction_time,
              num_iterations, beta, alpha, Q0, Q, rho)
-	print(trip_list)
 	trip_with_addnotations = []
 	for elem in trip_list:
 		trip_with_addnotations.append( {'latitude': elem[0][0], 'longitude':elem[0][1], 'description':elem[1]} )
-
-	print(trip_with_addnotations)
 
 	return jsonify(trip_with_addnotations)
 
