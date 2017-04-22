@@ -34,6 +34,7 @@ def ant_traverse(num_nodes, cost_mat, num_iterations, cities, beta, alpha, Q0, Q
         print("------------------------------------------------------------")
         print("\nBest path = %s" % (best_path_vec,))
         coordinates = [cities[node] for node in best_path_vec]
+        coordinates_as_tuples = list(zip(coordinates, range(len(coordinates))))
         # for node in best_path_vec:
         #     print(cities[node])
         #     geolocator = Nominatim()
@@ -53,7 +54,7 @@ def ant_traverse(num_nodes, cost_mat, num_iterations, cities, beta, alpha, Q0, Q
         coordinates = []
         traceback.print_exc()
 
-    return best_path_cost, coordinates, edges_len
+    return best_path_cost, coordinates_as_tuples, edges_len
 
 
 def time_of_trip(walk_pace, public_transport_pace, transport_waiting_time, single_attraction_time, edges_len):
