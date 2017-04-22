@@ -48,6 +48,15 @@
                    var elem = {};
                    elem["lng"] = parseFloat(r["longitude"]);
                    elem["lat"] = parseFloat(r["latitude"]);
+
+                  var marker = new google.maps.Marker({
+                    position: {lat: elem["lat"], lng: elem["lng"]},
+                    map: map,
+                    label: r["description"].toString(),
+                    title: r["description"].toString()
+                  });
+
+
                    fpath.push(elem);
                  }
                 console.log(fpath[0]);
