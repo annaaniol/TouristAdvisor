@@ -6,11 +6,11 @@ from collections import defaultdict
 
 class Cluster:
 
-    def __init__(self):
+    def __init__(self, epsilon, minimal_samples):
         self.data_source = "data/data6000_Krakow.csv"
         self.data = self.load_data()
-        self.eps = 0.001
-        self.min_samples = 5
+        self.eps = epsilon
+        self.min_samples = minimal_samples
         self.labels = ""
         self.grouped = defaultdict(list)
         self.points = []
@@ -87,6 +87,6 @@ class Cluster:
     def get_center_coordinate_list(self):
         return self.center_coordinates
 
-cluster = Cluster()
+cluster = Cluster(0.001, 5)
 
 print(type(cluster.get_calculate_distance_matrix()))

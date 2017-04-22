@@ -70,9 +70,9 @@ def time_of_trip(walk_pace, public_transport_pace, transport_waiting_time, singl
 
 
 def get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time, single_attraction_time,
-             num_iterations, beta, alpha, Q0, Q, rho):
+             num_iterations, beta, alpha, Q0, Q, rho, epsilon, minimal_samples):
 
-    cluster = Cluster()
+    cluster = Cluster(epsilon, minimal_samples)
     cost_mat = cluster.get_calculate_distance_matrix().copy()
     cities = cluster.get_center_coordinate_list()
 
@@ -130,6 +130,9 @@ if __name__ == "__main__":
     Q0 = 0.5
     Q = 0.9
     rho = 0.1
+    epsilon = 0.001
+    minimal_samples = 5
 
     print("List of coordinates : ", get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time,
-                                             single_attraction_time, num_iterations, beta, alpha, Q0, Q, rho))
+                                             single_attraction_time, num_iterations, beta, alpha, Q0, Q, rho, epsilon,
+                                             minimal_samples))
