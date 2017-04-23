@@ -30,7 +30,7 @@ def post_route():
 	Q = float(content["Q"])
 	rho = float(content["rho"])
 	epsilon = float(content["epsilon"])
-	minimal_samples = float(content["epsilon"])
+	minimal_samples = float(content["minimal_sample"])
 
 	trip_list = anttsp.get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time, 
 		single_attraction_time,
