@@ -42,7 +42,7 @@ class AntColony:
             self.cv.release()
         print("Max value", max(self.best_path_cost_list))
         print("Min value", min(self.best_path_cost_list))
-        plt.clf()
+      #  plt.clf()
         plt.plot(self.best_path_cost_list)
 
 
