@@ -1,6 +1,7 @@
 import sys
 import traceback
 import numpy
+import matplotlib.pyplot as plt
 
 from antcolony import AntColony
 from antgraph import AntGraph
@@ -92,17 +93,20 @@ def get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting
                 num_nodes += 1
                 if not below_time_limit:
                     print("Path cost, trip time and number of nodes ", path_cost, current_trip_time, num_nodes)
+                    plt.show()
                     return coordinates
                 below_time_limit = True
             else:
                 num_nodes -= 1
                 if below_time_limit:
                     print("Path cost, trip time and number of nodes ", prev_path_cost, prev_trip_time, num_nodes)
+                    plt.show()
                     return prev_coordinates
                 below_time_limit = False
 
             if num_nodes >= len(cost_mat) or num_nodes < 2:
                 print("Path cost, trip time and number of nodes ", path_cost, current_trip_time, num_nodes)
+                plt.show()
                 return coordinates
 
             prev_path_cost, prev_coordinates = path_cost, coordinates

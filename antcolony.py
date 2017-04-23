@@ -2,7 +2,7 @@ from ant import Ant
 from threading import Lock, Condition
 import numpy as np
 
-import random
+import matplotlib.pyplot as plt
 import sys
 
 class AntColony:
@@ -11,7 +11,7 @@ class AntColony:
         self.num_ants = num_ants
         self.num_iterations = num_iterations
         self.Alpha = 0.1
-
+        self.best_path_cost_list = []
         # condition var
         self.cv = Condition()
 
@@ -40,6 +40,11 @@ class AntColony:
             lock.release()
 
             self.cv.release()
+        print("Max value", max(self.best_path_cost_list))
+        print("Min value", min(self.best_path_cost_list))
+        plt.clf()
+        plt.plot(self.best_path_cost_list)
+
 
     # one iteration involves spawning a number of ant threads
     def iteration(self):
@@ -48,6 +53,7 @@ class AntColony:
         self.iter_counter += 1
         for ant in self.ants:
             ant.start()
+        self.best_path_cost_list.append(self.best_path_cost)
 
     # called by individual ants
     def update(self, ant):
