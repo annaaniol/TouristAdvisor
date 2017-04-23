@@ -26,7 +26,6 @@ def post_route():
 	num_iterations = float(content["num_iterations"])
 	beta = float(content["beta"])
 	alpha = float(content["alpha"])
-	Q0 = float(content["Q0"])
 	Q = float(content["Q"])
 	rho = float(content["rho"])
 	epsilon = float(content["epsilon"])
@@ -34,7 +33,7 @@ def post_route():
 
 	trip_list = anttsp.get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time, 
 		single_attraction_time,
-             num_iterations, beta, alpha, Q0, Q, rho, epsilon, minimal_samples)
+             num_iterations, beta, alpha, Q, rho, epsilon, minimal_samples)
 	trip_with_addnotations = []
 	for elem in trip_list:
 		trip_with_addnotations.append( {'latitude': elem[0][0], 'longitude':elem[0][1], 'description':elem[1]} )

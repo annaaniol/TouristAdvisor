@@ -70,7 +70,10 @@ def time_of_trip(walk_pace, public_transport_pace, transport_waiting_time, singl
 
 
 def get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting_time, single_attraction_time,
-             num_iterations, beta, alpha, Q0, Q, rho, epsilon, minimal_samples):
+             num_iterations, beta, alpha, Q, rho, epsilon, minimal_samples):
+
+#   TODO: Remove
+    Q0 = 0.5 
 
     cluster = Cluster(epsilon, minimal_samples)
     cost_mat = cluster.get_calculate_distance_matrix().copy()
