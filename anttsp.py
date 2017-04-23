@@ -76,7 +76,7 @@ def get_trip(walk_pace, public_transport_pace, user_trip_time, transport_waiting
     cost_mat = cluster.get_calculate_distance_matrix().copy()
     cities = cluster.get_center_coordinate_list()
 
-    num_nodes = int(user_trip_time*3)
+    num_nodes = int(user_trip_time*walk_pace)
 
     path_cost, coordinates, edges_len = ant_traverse(num_nodes, cost_mat, num_iterations, cities, beta, alpha, Q0, Q, rho)
 
